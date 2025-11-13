@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Café Montaña - Premium Honduran Coffee Export</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --espresso: #3C2415;
+            --cream: #F5F1EB;
+            --caramel: #D4A574;
+            --mocha: #8B6F47;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F5F1EB 0%, #E8DDD4 100%);
+            color: var(--espresso);
+        }
+        
+        .hero-bg {
+            background: linear-gradient(rgba(60, 36, 21, 0.3), rgba(60, 36, 21, 0.5)), url('resources/hero-coffee-farm.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .playfair { font-family: 'Playfair Display', serif; }
+        .dancing { font-family: 'Dancing Script', cursive; }
+        
+        .coffee-bean {
+            width: 8px;
+            height: 12px;
+            background: var(--espresso);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute;
+            opacity: 0.6;
+        }
+        
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--caramel), var(--mocha));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(60, 36, 21, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--caramel), var(--mocha));
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 165, 116, 0.4);
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+        
+        .infinite-scroll {
+            animation: scroll 30s linear infinite;
+        }
+        
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(245, 241, 235, 0.9);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .subscription-step {
+            display: none;
+        }
+        
+        .subscription-step.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Particles Background -->
+    <div class="floating-particles" id="particles"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-blur border-b border-caramel/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-caramel to-mocha rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">☕</span>
+                    </div>
+                    <span class="playfair text-xl font-bold gradient-text">Café Montaña</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="nav-link hover:text-caramel transition-colors">Home</a>
+                    <a href="about.html" class="nav-link hover:text-caramel transition-colors">About</a>
+                    <a href="products.html" class="nav-link hover:text-caramel transition-colors">Products</a>
+                    <a href="contact.html" class="nav-link hover:text-caramel transition-colors">Contact</a>
+                </div>
+                <button id="subscriptionBtn" class="btn-primary px-6 py-2 rounded-full font-medium">
+                    Subscribe
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg min-h-screen flex items-center justify-center relative">
+        <div class="text-center text-white z-10 max-w-4xl mx-auto px-4">
+            <h1 class="playfair text-6xl md:text-8xl font-bold mb-6 reveal">
+                <span class="gradient-text">Premium</span><br>
+                <span id="typed-text"></span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto reveal">
+                Exporting the finest Coffee from the mountains of Honduras to coffee lovers worldwide. 
+                Fresh, sustainable, and directly from family farms to your cup.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center reveal">
+                <button onclick="openSubscriptionModal()" class="btn-primary px-8 py-4 rounded-full text-lg font-semibold">
+                    Start Subscription
+                </button>
+                <a href="products.html" class="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-espresso transition-all">
+                    Explore Coffees
+                </a>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Featured Coffee Carousel -->
+    <section class="py-20 bg-cream">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16 reveal">
+                <h2 class="playfair text-5xl font-bold mb-4 gradient-text">Our Premium Selection</h2>
+                <p class="text-xl text-mocha max-w-2xl mx-auto">
+                    Discover the unique flavors from distinct regions of Honduras, each with its own character and story.
+                </p>
+            </div>
+            
+            <div class="splide" id="coffee-carousel">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        <li class="splide__slide">
+                            <div class="card-hover bg-white rounded-2xl p-8 shadow-lg">
+                                <img src="https://www.shutterstock.com/image-photo/coffee-tree-fresh-arabica-bean-600nw-2252798877.jpg" alt="Copán" class="w-full h-48 object-cover rounded-xl mb-6">
+                                <h3 class="playfair text-2xl font-bold mb-2">Copán</h3>
+                                <p class="text-mocha mb-4">Rich chocolate notes with bright citrus finish from high-altitude farms.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-2xl font-bold gradient-text">$24/kg</span>
+                                    <button class="btn-primary px-4 py-2 rounded-full text-sm">Add to Cart</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="splide__slide">
+                            <div class="card-hover bg-white rounded-2xl p-8 shadow-lg">
+                                <img src="https://www.shutterstock.com/image-photo/coffee-tree-fresh-arabica-bean-600nw-2252798877.jpg" alt="Intibuca" class="w-full h-48 object-cover rounded-xl mb-6">
+                                <h3 class="playfair text-2xl font-bold mb-2">Ocotepeque</h3>
+                                <p class="text-mocha mb-4">Delicate orange acidity with velvety body and peach flavors.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-2xl font-bold gradient-text">$26/kg</span>
+                                    <button class="btn-primary px-4 py-2 rounded-full text-sm">Add to Cart</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="splide__slide">
+                            <div class="card-hover bg-white rounded-2xl p-8 shadow-lg">
+                                <img src="https://www.shutterstock.com/image-photo/coffee-tree-fresh-arabica-bean-600nw-2252798877.jpg" alt="Ocotepeque" class="w-full h-48 object-cover rounded-xl mb-6">
+                                <h3 class="playfair text-2xl font-bold mb-2">Intibuca</h3>
+                                <p class="text-mocha mb-4"> Strong, bold flavor and high caffeine content with uncomparable flavor</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-2xl font-bold gradient-text">$26/kg</span>
+                                    <button class="btn-primary px-4 py-2 rounded-full text-sm">Add to Cart</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="splide__slide">
+                            <div class="card-hover bg-white rounded-2xl p-8 shadow-lg">
+                                <img src="https://www.shutterstock.com/image-photo/coffee-tree-fresh-arabica-bean-600nw-2252798877.jpg" alt="Santa Barbara" class="w-full h-48 object-cover rounded-xl mb-6">
+                                <h3 class="playfair text-2xl font-bold mb-2">Santa Barbara</h3>
+                                <p class="text-mocha mb-4">Balanced acidity with medium body and caramel sweetness.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-2xl font-bold gradient-text">$29/kg</span>
+                                    <button class="btn-primary px-4 py-2 rounded-full text-sm">Add to Cart</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="splide__slide">
+                            <div class="card-hover bg-white rounded-2xl p-8 shadow-lg">
+                                <img src="https://www.shutterstock.com/image-photo/coffee-tree-fresh-arabica-bean-600nw-2252798877.jpg" alt="Copán" class="w-full h-48 object-cover rounded-xl mb-6">
+                                <h3 class="playfair text-2xl font-bold mb-2">Comayagua</h3>
+                                <p class="text-mocha mb-4">Rich chocolate notes with bright citrus finish from high-altitude farms.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-2xl font-bold gradient-text">$19/kg</span>
+                                    <button class="btn-primary px-4 py-2 rounded-full text-sm">Add to Cart</button>
+                                </div>
+                            </div>
+                        </li>
+                                                <li class="splide__slide">
+                            <div class="card-hover bg-white rounded-2xl p-8 shadow-lg">
+                                <img src="https://www.shutterstock.com/image-photo/coffee-tree-fresh-arabica-bean-600nw-2252798877.jpg" alt="Copán" class="w-full h-48 object-cover rounded-xl mb-6">
+                                <h3 class="playfair text-2xl font-bold mb-2">El Paraiso</h3>
+                                <p class="text-mocha mb-4">Rich chocolate notes with bright citrus finish from high-altitude farms.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-2xl font-bold gradient-text">$30/kg</span>
+                                    <button class="btn-primary px-4 py-2 rounded-full text-sm">Add to Cart</button>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Farm Statistics -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                <div class="reveal">
+                    <div class="text-5xl font-bold gradient-text mb-4" data-count="120000">0</div>
+                    <h3 class="playfair text-2xl font-semibold mb-2">Coffee Families</h3>
+                    <p class="text-mocha">Supporting farming communities across Honduras</p>
+                </div>
+                <div class="reveal">
+                    <div class="text-5xl font-bold gradient-text mb-4" data-count="6">0</div>
+                    <h3 class="playfair text-2xl font-semibold mb-2">Coffee Regions</h3>
+                    <p class="text-mocha">Each with unique microclimates and flavors</p>
+                </div>
+                <div class="reveal">
+                    <div class="text-5xl font-bold gradient-text mb-4" data-count="95">0</div>
+                    <h3 class="playfair text-2xl font-semibold mb-2">% Arabica</h3>
+                    <p class="text-mocha">Premium quality coffee beans</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subscription Preview -->
+    <section class="py-20 bg-gradient-to-br from-cream to-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <h2 class="playfair text-5xl font-bold mb-6 gradient-text">Fresh Coffee Delivered</h2>
+                    <p class="text-xl text-mocha mb-8">
+                        Never run out of premium Honduran coffee. Our subscription service brings the finest beans
+                        directly from our farms to your doorstep, roasted to perfection and delivered fresh.
+                    </p>
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-6 h-6 bg-caramel rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm">✓</span>
+                            </div>
+                            <span class="text-lg">Choose from 12+ premium varieties</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-6 h-6 bg-caramel rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm">✓</span>
+                            </div>
+                            <span class="text-lg">Flexible delivery schedules</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-6 h-6 bg-caramel rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm">✓</span>
+                            </div>
+                            <span class="text-lg">Cancel or modify anytime</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-6 h-6 bg-caramel rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm">✓</span>
+                            </div>
+                            <span class="text-lg">Free shipping on all orders</span>
+                        </div>
+                    </div>
+                    <button onclick="openSubscriptionModal()" class="btn-primary px-8 py-4 rounded-full text-lg font-semibold">
+                        Start Your Subscription
+                    </button>
+                </div>
+                <div class="reveal">
+                    <div class="bg-white rounded-3xl p-8 shadow-2xl">
+                        <h3 class="playfair text-2xl font-bold mb-6 text-center">Subscription Plans</h3>
+                        <div class="space-y-4">
+                            <div class="border-2 border-caramel rounded-2xl p-6 cursor-pointer hover:bg-caramel/5 transition-colors">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-semibold text-lg">Explorer</h4>
+                                    <span class="text-2xl font-bold gradient-text">$24/month</span>
+                                </div>
+                                <p class="text-mocha mb-3">250g monthly • Single origin rotation</p>
+                                <div class="text-sm text-mocha">Perfect for trying new flavors</div>
+                            </div>
+                            <div class="border-2 border-caramel rounded-2xl p-6 cursor-pointer hover:bg-caramel/5 transition-colors">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-semibold text-lg">Enthusiast</h4>
+                                    <span class="text-2xl font-bold gradient-text">$45/month</span>
+                                </div>
+                                <p class="text-mocha mb-3">500g bi-weekly • Curated selection</p>
+                                <div class="text-sm text-mocha">Most popular choice</div>
+                            </div>
+                            <div class="border-2 border-caramel rounded-2xl p-6 cursor-pointer hover:bg-caramel/5 transition-colors">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-semibold text-lg">Connoisseur</h4>
+                                    <span class="text-2xl font-bold gradient-text">$85/month</span>
+                                </div>
+                                <p class="text-mocha mb-3">1kg monthly • Premium microlots</p>
+                                <div class="text-sm text-mocha">For the serious coffee lover</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customer Testimonials -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16 reveal">
+                <h2 class="playfair text-5xl font-bold mb-4 gradient-text">What Our Customers Say</h2>
+                <p class="text-xl text-mocha">Trusted by coffee lovers in over 25 countries</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-cream rounded-2xl p-8 card-hover reveal">
+                    <div class="flex items-center mb-6">
+                        <img src="https://coffeeshopstartups.com/wp-content/uploads/2024/12/start-a-coffee-shop-677x1024.png" alt="Customer" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold">Austin Williams</h4>
+                            <p class="text-mocha text-sm">Coffee Shop Owner, TX, USA</p>
+                        </div>
+                    </div>
+                    <p class="text-mocha italic">"The quality is exceptional. My customers can taste the difference, and the subscription service makes ordering so convenient."</p>
+                    <div class="flex text-caramel mt-4">
+                        ★★★★★
+                    </div>
+                </div>
+                
+                <div class="bg-cream rounded-2xl p-8 card-hover reveal">
+                    <div class="flex items-center mb-6">
+                        <img src="https://i.pinimg.com/564x/42/ac/0b/42ac0bdaf2fb1399bcf9322f6d6b9382.jpg" alt="Customer" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold">Marcus Weber</h4>
+                            <p class="text-mocha text-sm">Barista, NC, USA</p>
+                        </div>
+                    </div>
+                    <p class="text-mocha italic">"I've tried coffee from all over the world, but Honduran coffee from Café Montaña is now my go-to. The flavor profiles are incredible."</p>
+                    <div class="flex text-caramel mt-4">
+                        ★★★★★
+                    </div>
+                </div>
+                
+                <div class="bg-cream rounded-2xl p-8 card-hover reveal">
+                    <div class="flex items-center mb-6">
+                        <img src="https://www.cfra.org/sites/default/files/page-images/RiverMillCoffee-38.jpeg" alt="Customer" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold">Elena Rodriguez</h4>
+                            <p class="text-mocha text-sm">Costumer, FL, USA</p>
+                        </div>
+                    </div>
+                    <p class="text-mocha italic">"The subscription service is perfect. Fresh coffee arrives like clockwork, and I love discovering new varieties each month."</p>
+                    <div class="flex text-caramel mt-4">
+                        ★★★★★
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-espresso text-cream py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center space-x-2 mb-6">
+                <div class="w-8 h-8 bg-gradient-to-br from-caramel to-mocha rounded-full flex items-center justify-center">
+                    <span class="text-white font-bold text-sm">☕</span>
+                </div>
+                <span class="playfair text-2xl font-bold">Café Montaña</span>
+            </div>
+            <p class="text-cream/80 mb-6">Premium Honduran Coffee Export • Since 2025</p>
+            <p class="text-cream/60 text-sm">© 2025 Café Montaña. All rights reserved. Crafted with ☕ and passion.</p>
+        </div>
+    </footer>
+
+    <!-- Subscription Modal -->
+    <div id="subscriptionModal" class="modal">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="playfair text-3xl font-bold gradient-text">Start Your Subscription</h2>
+                <button onclick="closeSubscriptionModal()" class="text-mocha hover:text-espresso text-2xl">&times;</button>
+            </div>
+            
+            <!-- Step 1: Plan Selection -->
+            <div id="step1" class="subscription-step active">
+                <h3 class="text-xl font-semibold mb-6">Choose Your Plan</h3>
+                <div class="space-y-4">
+                    <div class="plan-option border-2 border-gray-200 rounded-2xl p-6 cursor-pointer hover:border-caramel transition-colors" data-plan="explorer" data-price="24">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-semibold text-lg">Explorer</h4>
+                            <span class="text-2xl font-bold gradient-text">$24/month</span>
+                        </div>
+                        <p class="text-mocha mb-3">250g monthly • Single origin rotation</p>
+                        <div class="text-sm text-mocha">Perfect for trying new flavors</div>
+                    </div>
+                    <div class="plan-option border-2 border-gray-200 rounded-2xl p-6 cursor-pointer hover:border-caramel transition-colors" data-plan="enthusiast" data-price="45">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-semibold text-lg">Enthusiast</h4>
+                            <span class="text-2xl font-bold gradient-text">$45/month</span>
+                        </div>
+                        <p class="text-mocha mb-3">500g bi-weekly • Curated selection</p>
+                        <div class="text-sm text-mocha">Most popular choice</div>
+                    </div>
+                    <div class="plan-option border-2 border-gray-200 rounded-2xl p-6 cursor-pointer hover:border-caramel transition-colors" data-plan="connoisseur" data-price="85">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-semibold text-lg">Connoisseur</h4>
+                            <span class="text-2xl font-bold gradient-text">$85/month</span>
+                        </div>
+                        <p class="text-mocha mb-3">1kg monthly • Premium microlots</p>
+                        <div class="text-sm text-mocha">For the serious coffee lover</div>
+                    </div>
+                </div>
+                <button onclick="nextStep()" class="btn-primary w-full py-3 rounded-full font-semibold mt-6">Continue</button>
+            </div>
+            
+            <!-- Step 2: Coffee Selection -->
+            <div id="step2" class="subscription-step">
+                <h3 class="text-xl font-semibold mb-6">Select Your Coffee</h3>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="coffee-option border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-caramel transition-colors" data-coffee="copan">
+                        <img src="https://www.shutterstock.com/image-photo/coffee-tree-fresh-arabica-bean-600nw-2252798877.jpg" alt="Copán" class="w-full h-24 object-cover rounded-lg mb-2">
+                        <h4 class="font-semibold text-sm">Copán</h4>
+                        <p class="text-xs text-mocha">Chocolate, Citrus</p>
+                    </div>
+                    <div class="coffee-option border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-caramel transition-colors" data-coffee="montecillos">
+                        <img src="https://confidencialhn.com/wp-content/uploads/2023/03/cofi.jpg" alt="Intibuca" class="w-full h-24 object-cover rounded-lg mb-2">
+                        <h4 class="font-semibold text-sm">Intibuca</h4>
+                        <p class="text-xs text-mocha">Orange, Peach</p>
+                    </div>
+                    <div class="coffee-option border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-caramel transition-colors" data-coffee="opalaca">
+                        <img src="https://confidencialhn.com/wp-content/uploads/2023/03/cofi.jpg" alt="Ocotepeque" class="w-full h-24 object-cover rounded-lg mb-2">
+                        <h4 class="font-semibold text-sm">Ocotepeque</h4>
+                        <p class="text-xs text-mocha">Tropical, Wine</p>
+                    </div>
+                    <div class="coffee-option border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-caramel transition-colors" data-coffee="santabarbara">
+                        <img src="https://previews.123rf.com/images/lanabyko/lanabyko1701/lanabyko170100016/69896799-beautiful-landscape-of-coffee-farms-in-san-luis-de-planes-by-santa-barbara-national-park-honduras.jpg" alt="Santa Barbara" class="w-full h-24 object-cover rounded-lg mb-2">
+                        <h4 class="font-semibold text-sm">Santa Barbara Gold</h4>
+                        <p class="text-xs text-mocha">Caramel, Balanced</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="prevStep()" class="border-2 border-caramel text-caramel px-6 py-3 rounded-full font-semibold flex-1">Back</button>
+                    <button onclick="nextStep()" class="btn-primary px-6 py-3 rounded-full font-semibold flex-1">Continue</button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Grind Preference -->
+            <div id="step3" class="subscription-step">
+                <h3 class="text-xl font-semibold mb-6">Grind Preference</h3>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="grind-option border-2 border-gray-200 rounded-xl p-6 cursor-pointer hover:border-caramel transition-colors text-center" data-grind="whole">
+                        <div class="text-4xl mb-2">☕</div>
+                        <h4 class="font-semibold mb-2">Whole Bean</h4>
+                        <p class="text-sm text-mocha">Grind fresh at home</p>
+                    </div>
+                    <div class="grind-option border-2 border-gray-200 rounded-xl p-6 cursor-pointer hover:border-caramel transition-colors text-center" data-grind="coarse">
+                        <div class="text-4xl mb-2">🫖</div>
+                        <h4 class="font-semibold mb-2">Coarse</h4>
+                        <p class="text-sm text-mocha">French press, cold brew</p>
+                    </div>
+                    <div class="grind-option border-2 border-gray-200 rounded-xl p-6 cursor-pointer hover:border-caramel transition-colors text-center" data-grind="medium">
+                        <div class="text-4xl mb-2">☕</div>
+                        <h4 class="font-semibold mb-2">Medium</h4>
+                        <p class="text-sm text-mocha">Drip, pour over</p>
+                    </div>
+                    <div class="grind-option border-2 border-gray-200 rounded-xl p-6 cursor-pointer hover:border-caramel transition-colors text-center" data-grind="fine">
+                        <div class="text-4xl mb-2">☕</div>
+                        <h4 class="font-semibold mb-2">Fine</h4>
+                        <p class="text-sm text-mocha">Espresso, moka pot</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="prevStep()" class="border-2 border-caramel text-caramel px-6 py-3 rounded-full font-semibold flex-1">Back</button>
+                    <button onclick="nextStep()" class="btn-primary px-6 py-3 rounded-full font-semibold flex-1">Continue</button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Checkout -->
+            <div id="step4" class="subscription-step">
+                <h3 class="text-xl font-semibold mb-6">Complete Your Subscription</h3>
+                <div class="bg-cream rounded-2xl p-6 mb-6">
+                    <h4 class="font-semibold mb-4">Order Summary</h4>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between">
+                            <span>Plan:</span>
+                            <span id="selectedPlan">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Coffee:</span>
+                            <span id="selectedCoffee">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Grind:</span>
+                            <span id="selectedGrind">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Shipping:</span>
+                            <span class="text-green-600">Free</span>
+                        </div>
+                        <hr class="my-2">
+                        <div class="flex justify-between font-semibold text-lg">
+                            <span>Total:</span>
+                            <span id="totalPrice" class="gradient-text">$0/month</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-4 mb-6">
+                    <input type="text" placeholder="Full Name" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-caramel" required>
+                    <input type="email" placeholder="Email Address" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-caramel" required>
+                    <input type="text" placeholder="Shipping Address" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-caramel" required>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button onclick="prevStep()" class="border-2 border-caramel text-caramel px-6 py-3 rounded-full font-semibold flex-1">Back</button>
+                    <button onclick="completeSubscription()" class="btn-primary px-6 py-3 rounded-full font-semibold flex-1">Start Subscription</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
